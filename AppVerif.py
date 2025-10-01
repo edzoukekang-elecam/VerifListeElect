@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from rapidfuzz import fuzz, process
 import unidecode
 
 # -------------------------------
@@ -42,15 +41,9 @@ if st.button("Vérifier"):
         partial_matches = [n for n in data["Nom"] if nom_saisi in unidecode.unidecode(n.lower().strip())]
 
         # -------------------------------
-        # 3. Recherche fuzzy (tolérance aux fautes)
-        # -------------------------------
-        results = process.extract(nom_saisi, data["Nom"].tolist(), scorer=fuzz.partial_ratio, limit=50)
-        fuzzy_matches = [r[0] for r in results if r[1] >= 70]
-
-        # -------------------------------
         # Fusionner tous les résultats sans doublons
         # -------------------------------
-        all_matches = list(set(exact_matches + partial_matches + fuzzy_matches))
+        all_matches = list(set(exact_matches + partial_matches))
 
         if all_matches:
             st.success(f"✅ {len(all_matches)} résultat(s) trouvé(s) pour : {nom}")
